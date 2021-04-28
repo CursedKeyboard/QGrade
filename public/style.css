@@ -17,3 +17,17 @@ i.icon {
 .nopad{
   padding: 0 !important;
 }
+
+.ui.subject.row > div {
+  display: inline-flex;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin: 0px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#subjectNameInput {
+  font-size: 1.5em;
+  font-weight: bold;
+}

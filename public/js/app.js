@@ -27,7 +27,7 @@ class Subject extends React.Component {
       },
     ],
     addingAssignmentOpen: false,
-    subjectAverage: 87,
+    subjectAverage: 100,
     subjectName: 'Intro to Algorithms'
   };
   
@@ -40,6 +40,7 @@ class Subject extends React.Component {
             subjectName={this.state.subjectName}
             subjectAverage={this.state.subjectAverage}
             handleOpenAddAssignment={this.handleOpenAddAssignment}
+            handleEditName={this.handleSubjectNameChange}
           />
           </div>
       </div>
@@ -85,6 +86,9 @@ class Subject extends React.Component {
         const avg_adjusted = Math.round(weight_proportion * grade);
         avg = avg + avg_adjusted;
       }
+    }
+    if (total_weight === 0){
+      avg = 100;
     }
     this.setState({'subjectAverage': avg});
   };
@@ -137,7 +141,11 @@ class Subject extends React.Component {
     );
   };
 
-
+  handleSubjectNameChange = (attrs) => {
+    this.setState({
+      subjectName: attrs.subjectName
+    });
+  };
 }
 
 class ToggleableAssignmentForm extends React.Component {
@@ -157,20 +165,105 @@ class ToggleableAssignmentForm extends React.Component {
 }
 
 class SubjectHeader extends React.Component {
+  state = {
+    editable: false
+  }
+  render () {
+    if(!this.state.editable){
+      return (
+        <div className='ui equal width grid segment'>
+            <div className='ten wide column'>
+              <div className='ui'><h2> {this.props.subjectName} </h2></div>
+              <div className='ui'>
+                <h3>
+                  {this.props.subjectAverage}%
+                </h3>
+              </div>
+            </div>
+            <div id="buttonIconsColumn" className='middle aligned column'>
+              <div id="buttonIcons" className='three buttons'>
+              <button className='ui circular icon button' onClick={this.props.handleOpenAddAssignment}>
+                <i className='add icon'/>
+              </button>
+              <button tabIndex='-1' className='ui circular edit icon button' onClick={this.formOpen}>
+                <i className='edit icon'/>
+              </button>
+              <button tabIndex='-1' className='ui circular edit icon button'>
+                <i className='file icon'/>
+              </button>
+              </div>
+            </div>
+        </div>
+      );
+    }
+    else{
+      return (
+        <SubjectHeaderForm 
+          subjectName = {this.props.subjectName}
+          formCancel = {this.formClose}
+          editName = {this.handleEditName}
+          subjectAverage = {this.props.subjectAverage}
+        />
+      );
+    }
+  }
+
+  formClose = () => {
+    this.setState({editable: false});
+  }
+
+  formOpen = () => {
+    this.setState({editable: true});
+  }
+
+  handleEditName = (attrs) => {
+    this.props.handleEditName(attrs);
+    this.formClose();
+  }
+}
+
+class SubjectHeaderForm extends React.Component {
+  state = {
+    subjectName: this.props.subjectName
+  };
+
+  inputNameChange = (e) => {
+    this.setState({subjectName: e.target.value});
+  }
+
+  nameChangeSubmit = () => {
+    this.props.editName(this.state);
+  }
+
   render () {
     return (
-    <div className='ui equal width grid segment'>
+      <form className='ui equal width grid segment'>
         <div className='ten wide column'>
-          <div className='ui'><h2> {this.props.subjectName} </h2></div>
-          <div className='ui'><h3> {this.props.subjectAverage}% </h3></div>
+          <div className='input'>
+            <input
+              id="subjectNameInput"
+              value={this.state.subjectName}
+              onChange={this.inputNameChange}
+            />
+          </div>
+          <div className='ui'>
+            <h3>
+              {this.props.subjectAverage}%
+            </h3>
+          </div>
         </div>
-        <div className='middle aligned column'>
-          <button className='ui labeled icon button' onClick={this.props.handleOpenAddAssignment}>
-            <i className='add icon'/>
-            Add Assignment
-          </button>
+        <div className='ui middle aligned column'>
+          <div className='ui two buttons'>
+            <button className='button' type='Submit' onClick={this.nameChangeSubmit}>
+              {"Save"}
+            </button>
+            <div className='or'></div>
+            <button className='button' onClick={this.props.formCancel}>
+              {"Cancel"}
+            </button>
+          </div>
         </div>
-    </div>
+      </form>
     );
   }
 }
@@ -345,6 +438,7 @@ class AssignmentForm extends React.Component {
           <button className='ui blue button' type='Submit' onClick={this.handleSubmit}>
             {submitText}
           </button>
+          <div className='or'></div>
           <button className='ui red button' onClick={this.props.handleClose}>
             Cancel
           </button>
