@@ -1,7 +1,7 @@
 class Subject extends React.Component {
   state = {
     assignments: [],
-    addingAssignmentOpen: false,
+    assignmentFormOpen: false,
     subjectAverage: 100,
     subjectName: 'Barnacles',
     htmlFormOpen: false,
@@ -15,9 +15,9 @@ class Subject extends React.Component {
           <SubjectHeader
             subjectName={this.state.subjectName}
             subjectAverage={this.state.subjectAverage}
-            handleOpenAddAssignment={this.handleOpenAddAssignment}
+            handleOpenAddAssignment={this.toggleAssignmentForm}
             handleEditName={this.handleSubjectNameChange}
-            handleImportHTML={this.openImportHTML}
+            handleImportHTML={this.toggleHTMLForm}
           />
           </div>
       </div>
@@ -29,7 +29,7 @@ class Subject extends React.Component {
       <ToggleableAssignmentForm 
         handleCloseAddAssignment={this.handleCloseAddAssignment}
         handleAssignmentCreate={this.handleAssignmentCreate}
-        formOpen={this.state.addingAssignmentOpen}
+        formOpen={this.state.assignmentFormOpen}
       />
       <div className='ui column centered grid'>
         <div className='ui column twelve wide'>
@@ -172,6 +172,19 @@ class Subject extends React.Component {
       assignments: this.state.assignments.concat(assignment_attrs)
     }, () => this.updateSubjectGrade());
   };
+
+  toggleHTMLForm = () => {
+    this.setState({
+      htmlFormOpen: !this.state.htmlFormOpen
+    });
+  };
+
+  toggleAssignmentForm = () => {
+    this.setState({
+      assignmentFormOpen: !this.state.assignmentFormOpen
+    });
+  };
+  
 }
 
 class ImportHTMLForm extends React.Component {
@@ -186,7 +199,7 @@ class ImportHTMLForm extends React.Component {
           <div className='middle aligned card'>
             <div className='ui'>
               <textarea
-                placeholder='Paste your html here!'
+                placeholder='Paste your quercus html here!'
                 value={this.state.htmlText}
                 rows='1'
                 cols='30'
@@ -219,7 +232,7 @@ class ImportHTMLForm extends React.Component {
 
   submitForm = () => {
     this.props.submitForm(this.state);
-  }
+  };
 }
 class ToggleableAssignmentForm extends React.Component {
   render() {
@@ -258,11 +271,11 @@ class SubjectHeader extends React.Component {
               <button className='ui circular icon button' onClick={this.props.handleOpenAddAssignment}>
                 <i className='add icon'/>
               </button>
-              <button tabIndex='-1' className='ui circular icon button' onClick={this.formOpen}>
-                <i className='edit icon'/>
-              </button>
               <button tabIndex='-1' className='ui circular icon button' onClick={this.props.handleImportHTML}>
                 <i className='file icon'/>
+              </button>
+              <button tabIndex='-1' className='ui circular icon button' onClick={this.formOpen}>
+                <i className='edit icon'/>
               </button>
               </div>
             </div>
