@@ -1,34 +1,10 @@
 class Subject extends React.Component {
   state = {
-    assignments: [
-      {
-        id:uuid.v4(),
-        assignmentTitle:"A1",
-        assignmentGrade:50,
-        assignmentWeight:20,
-      },
-      {
-        id:uuid.v4(),
-        assignmentTitle:"Assignment 2: Sockets and Communications",
-        assignmentGrade:67,
-        assignmentWeight:54,
-      },
-      {
-        id:uuid.v4(),
-        assignmentTitle:"Tutorial",
-        assignmentGrade:100,
-        assignmentWeight:10,
-      },
-      {
-        id:uuid.v4(),
-        assignmentTitle:"Final exam",
-        assignmentGrade:23,
-        assignmentWeight:100,
-      },
-    ],
+    assignments: [],
     addingAssignmentOpen: false,
     subjectAverage: 100,
-    subjectName: 'Intro to Algorithms'
+    subjectName: 'Barnacles',
+    htmlFormOpen: false,
   };
   
   render() {
@@ -41,9 +17,15 @@ class Subject extends React.Component {
             subjectAverage={this.state.subjectAverage}
             handleOpenAddAssignment={this.handleOpenAddAssignment}
             handleEditName={this.handleSubjectNameChange}
+            handleImportHTML={this.openImportHTML}
           />
           </div>
       </div>
+      <ImportHTMLForm 
+        formOpen={this.state.htmlFormOpen}
+        closeForm={this.closeImportHTML}
+        submitForm={this.handleSubmitHTML}
+      />
       <ToggleableAssignmentForm 
         handleCloseAddAssignment={this.handleCloseAddAssignment}
         handleAssignmentCreate={this.handleAssignmentCreate}
@@ -146,8 +128,99 @@ class Subject extends React.Component {
       subjectName: attrs.subjectName
     });
   };
+
+  openImportHTML = () => {
+    this.setState({
+      htmlFormOpen: true
+    });
+  };
+
+  closeImportHTML = () => {
+    this.setState({
+      htmlFormOpen: false
+    });
+  };
+
+  handleSubmitHTML = (attrs) => {
+    const createBulkAssignments = this.createBulkAssignments; // Needs to be defned because 'this' changes in jquery scope :(
+    let assignment_attrs = [];
+    const assignment_list = $('#grades_summary tr', attrs.htmlText.html).filter('.student_assignment').filter('.editable');
+    assignment_list.each(function(index){
+      const title = $(this).find('th').find('a').text();
+      let points_earned = $(this).find('.grade').text().split(/\s+/);
+      points_earned = parseFloat(points_earned[points_earned.length - 2]);
+      const points_total = parseFloat($(this).find('.points_possible').text());
+      const average = Math.round((points_earned / points_total) * 100);
+      const attrs = {
+        assignmentTitle: title, 
+        assignmentGrade: average,
+        assignmentWeight: 0
+      };
+      assignment_attrs.push(attrs);
+    });
+
+    createBulkAssignments(assignment_attrs);
+    this.closeImportHTML();
+  };
+
+  createBulkAssignments = (assignment_attrs) => {
+    let i;
+    for(i = 0; i < assignment_attrs.length; i++){
+      assignment_attrs[i] = helpers.newAssignment(assignment_attrs[i]);
+    }
+    this.setState({
+      assignments: this.state.assignments.concat(assignment_attrs)
+    }, () => this.updateSubjectGrade());
+  };
 }
 
+class ImportHTMLForm extends React.Component {
+  state = {
+    htmlText: ''
+  };
+  
+  render () {
+    if (this.props.formOpen){
+      return (
+        <div className='ui centered column grid'>
+          <div className='middle aligned card'>
+            <div className='ui'>
+              <textarea
+                placeholder='Paste your html here!'
+                value={this.state.htmlText}
+                rows='1'
+                cols='30'
+                onChange={this.changeTextArea}
+              />
+            </div>
+            <div className='ui two buttons'>
+              <button className='button' onClick={this.submitForm}>
+                Submit
+              </button>
+              <button className='button' onClick={this.props.closeForm}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    else {
+      return null;
+    }
+  }
+
+  changeTextArea = (e) => {
+    const html = e.target.value;
+    this.setState({
+      htmlText: {html}
+    });
+  };
+
+  submitForm = () => {
+    this.props.submitForm(this.state);
+  }
+}
 class ToggleableAssignmentForm extends React.Component {
   render() {
     if (this.props.formOpen){
@@ -185,10 +258,10 @@ class SubjectHeader extends React.Component {
               <button className='ui circular icon button' onClick={this.props.handleOpenAddAssignment}>
                 <i className='add icon'/>
               </button>
-              <button tabIndex='-1' className='ui circular edit icon button' onClick={this.formOpen}>
+              <button tabIndex='-1' className='ui circular icon button' onClick={this.formOpen}>
                 <i className='edit icon'/>
               </button>
-              <button tabIndex='-1' className='ui circular edit icon button'>
+              <button tabIndex='-1' className='ui circular icon button' onClick={this.props.handleImportHTML}>
                 <i className='file icon'/>
               </button>
               </div>
