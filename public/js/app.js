@@ -1,3 +1,122 @@
+class Big extends React.Component {
+  render () {
+    return (
+    <div id='Main-container'>
+      <Subject/>
+      <SidebarOverall />
+    </div>
+    );
+  }
+}
+
+class SidebarOverall extends React.Component {
+  state = {
+    showSidebar: false
+  };
+
+  render () {
+    return (
+    <div id='Sidebar' className='ui column three wide grid'>
+      <button id='FAQButton' onClick={this.toggleHelp}>
+        <i className='blue question icon'/>
+      </button>
+      <Sidebar 
+        showSidebar={this.state.showSidebar}
+      />
+    </div>
+    );
+  }
+
+  toggleHelp = () => {
+    this.setState({
+      showSidebar: !this.state.showSidebar
+    });
+  };
+}
+
+class Sidebar extends React.Component {
+  render () {
+    if(this.props.showSidebar){
+      return (
+        <div id='sidebarFAQ' className='ui card'>
+          <div className='content'>
+            <div className='header'>
+              Help and FAQ
+            </div>
+            <div className='description'>
+              Welcome to help and FAQ!
+            </div>
+          </div>
+          <div className='content'>
+            <div className='header'>
+              Why should I use this over my own excel sheet?
+            </div>
+            <div className='description'>
+              This site allows you to copy assignments from quercus in seconds and is made for faster workflow!
+            </div>
+          </div>
+          <div className='content'>
+            <div className='header'>
+              How do I insert my quercus data?
+            </div>
+            <div className='description'>
+              To copy paste your quercus data, go to your grades quercus page, and click inspect element anywhere on the page. 
+              Then, right-click the second-topmost line in the newly appeared window (you might have to scroll up).  
+            </div>
+            <div className='img'>
+              <img className='help-image' src='../images/How-To-Find-Top-HTML.jpg'/>
+            </div>
+            <div className='description'>
+              Once you've done this, choose the copy -> innerHTML option
+            </div>
+            <div className='img'>
+              <img className='help-image' src='../images/How-To-Copy-InnerHTML.jpg'/>
+            </div>
+            <div className='description'>
+              Finally, navigate to this site. Click the file icon at the
+              top to import your html. You should be shown box which asks you to paste your html. Paste via right-click -> paste
+              or control v and click submit!
+            </div>
+            <div className='img'>
+              <img className='help-image' src='../images/How-To-Paste-HTML.jpg'/>
+            </div>
+          </div>
+          <div className='content'>
+            <div className='header'>
+              I Imported Data and My Grades Have NAN! Is This Bad?
+            </div>
+            <div className='description'>
+              Nan just means the grade is not available on quercus. You will have to manually adjust the grade yourself.
+            </div>
+          </div>
+          <div className='content'>
+            <div className='header'>
+              I dont want to spend much time on this. How can I get the fastest workflow possible?
+            </div>
+            <div className='description'>
+              You can achieve a faster workflow by tabbing through assignments and input boxes. 
+            </div>
+            <div className='description'>For example,
+              if I had three assignments and wanted to quickly change the grade of assignment 1 and weight of assignment 3, 
+              I would click the top of my screen, press tab a couple of times until I reached assignment 1's edit button and 
+              press enter. Then, I would press tab a couple more times until I reached the box asking for my new assignment grade,
+              change the grade, and press enter.
+            </div>
+            <div className='description'>
+              From here, I can tab twice and reach the edit button for assignment 3, press enter,
+              tab down to the box asking for the new weight, change the weight, and press enter.
+            </div>
+          </div>
+        </div>
+      );
+    }
+    else {
+      return (
+        null
+      );
+    }
+  }
+}
 class Subject extends React.Component {
   state = {
     assignments: [],
@@ -27,8 +146,8 @@ class Subject extends React.Component {
         submitForm={this.handleSubmitHTML}
       />
       <ToggleableAssignmentForm 
-        handleCloseAddAssignment={this.handleCloseAddAssignment}
-        handleAssignmentCreate={this.handleAssignmentCreate}
+        handleClose={this.handleCloseAddAssignment}
+        handleSubmit={this.handleAssignmentCreate}
         formOpen={this.state.assignmentFormOpen}
       />
       <div className='ui column centered grid'>
@@ -45,11 +164,12 @@ class Subject extends React.Component {
   }
 
   handleOpenAddAssignment = () => {
-    this.setState({'addingAssignmentOpen': true});
+    this.setState({assignmentFormOpen: true},
+      this.closeImportHTML());
   };
 
   handleCloseAddAssignment = () => {
-    this.setState({'addingAssignmentOpen': false});
+    this.setState({assignmentFormOpen: false});
   };
 
   updateSubjectGrade = () => {
@@ -76,7 +196,6 @@ class Subject extends React.Component {
   };
 
   handleAssignmentCreate = (assignment) => {
-    console.log(assignment.assignmentGrade, assignment.assignmentTitle, assignment.assignmentWeight);
     this.createAssignment(assignment);
     this.handleCloseAddAssignment();
   };
@@ -132,7 +251,7 @@ class Subject extends React.Component {
   openImportHTML = () => {
     this.setState({
       htmlFormOpen: true
-    });
+    }, () => this.handleCloseAddAssignment());
   };
 
   closeImportHTML = () => {
@@ -174,15 +293,21 @@ class Subject extends React.Component {
   };
 
   toggleHTMLForm = () => {
-    this.setState({
-      htmlFormOpen: !this.state.htmlFormOpen
-    });
+    if(!this.state.htmlFormOpen){
+      this.openImportHTML();
+    }
+    else{
+      this.closeImportHTML();
+    }
   };
 
   toggleAssignmentForm = () => {
-    this.setState({
-      assignmentFormOpen: !this.state.assignmentFormOpen
-    });
+    if(!this.state.assignmentFormOpen){
+      this.handleOpenAddAssignment();
+    }
+    else{
+      this.handleCloseAddAssignment();
+    }
   };
   
 }
@@ -240,8 +365,8 @@ class ToggleableAssignmentForm extends React.Component {
       return (
         <div className='ui centered cards'>
             <AssignmentForm
-              handleClose={this.props.handleCloseAddAssignment}
-              handleSubmit={this.props.handleAssignmentCreate}
+              handleClose={this.props.handleClose}
+              handleSubmit={this.props.handleSubmit}
             />
         </div>
       );
@@ -482,7 +607,8 @@ class AssignmentForm extends React.Component {
     this.setState({ weight: weight });
   };
 
-  handleSubmit = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();
     this.props.handleSubmit({
       assignmentTitle: this.state.title,
       assignmentGrade: this.state.grade,
@@ -490,6 +616,11 @@ class AssignmentForm extends React.Component {
     });
     this.props.handleClose();
   };
+
+  handleClose = (e) => {
+    e.preventDefault();
+    this.props.handleClose();
+  }
 
   render () {
     const submitText = this.props.id ? 'Update' : 'Create'
@@ -525,7 +656,7 @@ class AssignmentForm extends React.Component {
             {submitText}
           </button>
           <div className='or'></div>
-          <button className='ui red button' onClick={this.props.handleClose}>
+          <button className='ui red button' onClick={this.handleClose}>
             Cancel
           </button>
         </div>
@@ -535,6 +666,6 @@ class AssignmentForm extends React.Component {
 }
 
 ReactDOM.render(
-  <Subject />,
+  <Big />,
   document.getElementById('content')
 );

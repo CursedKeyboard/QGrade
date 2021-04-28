@@ -30,3 +30,34 @@ i.icon {
   font-size: 1.5em;
   font-weight: bold;
 }
+
+#FAQButton {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: whitesmoke;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+#Sidebar {
+  position: fixed;
+  right: 9.375%;
+  top: 30px;
+  height: 90%;
+  z-index: 2;
+}
+
+#sidebarFAQ {
+  overflow-y: scroll;
+  height: 100%;
+}
+.help-image {
+  height: 30%;
+  width: 100%;
+}
