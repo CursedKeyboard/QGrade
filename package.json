@@ -3,12 +3,8 @@
   "version": "1.0.0",
   "author": "Saiem Irfan",
   "scripts": {
-    "go": "open http://localhost:3000; npm run server",
-    "e2e": "nightwatch --config nightwatch.js",
-    "run-e2e": "concurrently -s first -k \"npm start\" \"sleep 15; npm run e2e\"",
-    "test": "concurrently -k 'npm run server' 'npm run e2e'",
     "start": "npm run server",
-    "server": "live-server public --host=localhost --port=3000 --middleware=./disable-browser-cache.js"
+    "server": "live-server public --middleware=./disable-browser-cache.js"
   },
   "private": true,
   "devDependencies": {
