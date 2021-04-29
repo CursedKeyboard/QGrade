@@ -265,7 +265,7 @@ class Subject extends React.Component {
   handleSubmitHTML = (attrs) => {
     const createBulkAssignments = this.createBulkAssignments; // Needs to be defned because 'this' changes in jquery scope :(
     let assignment_attrs = [];
-    const assignment_list = $('#grades_summary tr', attrs.htmlText.html).filter('.student_assignment').filter('.editable');
+    const assignment_list = $('#grades_summary tr', attrs.htmlText).filter('.student_assignment').filter('.editable');
     assignment_list.each(function(index){
       const title = $(this).find('th').find('a').text();
       let points_earned = $(this).find('.grade').text().split(/\s+/);
@@ -353,7 +353,7 @@ class ImportHTMLForm extends React.Component {
   changeTextArea = (e) => {
     const html = e.target.value;
     this.setState({
-      htmlText: {html}
+      htmlText: html
     });
   };
 
