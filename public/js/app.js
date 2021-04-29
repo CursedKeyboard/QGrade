@@ -17,9 +17,11 @@ class SidebarOverall extends React.Component {
   render () {
     return (
     <div id='Sidebar' className='ui column three wide grid'>
-      <button id='FAQButton' onClick={this.toggleHelp}>
-        <i className='blue question icon'/>
-      </button>
+        <i id='FAQButton' className='circular big blue question icon' onClick={this.toggleHelp}/>
+      <a href='https://github.com/CursedKeyboard/QGrade' target="_blank">
+          <i id='source' className='circular big blue github icon'/>
+      </a>
+
       <Sidebar 
         showSidebar={this.state.showSidebar}
       />
@@ -41,10 +43,10 @@ class Sidebar extends React.Component {
         <div id='sidebarFAQ' className='ui card'>
           <div className='content'>
             <div className='header'>
-              Help and FAQ
+              Welcome to Calqlator
             </div>
             <div className='description'>
-              Welcome to help and FAQ!
+              A grade calculator with the ability to parse data from quercus
             </div>
           </div>
           <div className='content'>
@@ -64,13 +66,13 @@ class Sidebar extends React.Component {
               Then, right-click the second-topmost line in the newly appeared window (you might have to scroll up).  
             </div>
             <div className='img'>
-              <img className='help-image' src='../images/How-To-Find-Top-HTML.jpg'/>
+              <img className='help-image' src='../images/How-To-Find-Top-HTML.JPG'/>
             </div>
             <div className='description'>
               Once you've done this, choose the copy -> innerHTML option
             </div>
             <div className='img'>
-              <img className='help-image' src='../images/How-To-Copy-InnerHTML.jpg'/>
+              <img className='help-image' src='../images/How-To-Copy-InnerHTML.JPG'/>
             </div>
             <div className='description'>
               Finally, navigate to this site. Click the file icon at the
@@ -78,7 +80,7 @@ class Sidebar extends React.Component {
               or control v and click submit!
             </div>
             <div className='img'>
-              <img className='help-image' src='../images/How-To-Paste-HTML.jpg'/>
+              <img className='help-image' src='../images/How-To-Paste-HTML.JPG'/>
             </div>
           </div>
           <div className='content'>
