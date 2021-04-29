@@ -1,12 +1,12 @@
 {
-  "name": "voting_app",
-  "version": "1.1.0",
-  "author": "Fullstack.io",
+  "name": "credits_calculator",
+  "version": "1.0.0",
+  "author": "Saiem Irfan",
   "scripts": {
     "go": "open http://localhost:3000; npm run server",
     "e2e": "nightwatch --config nightwatch.js",
     "run-e2e": "concurrently -s first -k \"npm start\" \"sleep 15; npm run e2e\"",
-    "test": "./node_modules/.bin/concurrently -k 'npm run server' 'npm run e2e'",
+    "test": "concurrently -k 'npm run server' 'npm run e2e'",
     "start": "npm run server",
     "server": "live-server public --host=localhost --port=3000 --middleware=./disable-browser-cache.js"
   },
@@ -14,5 +14,20 @@
   "devDependencies": {
     "@fullstackio/live-server": "1.2.2",
     "concurrently": "^5.0.2"
-  }
+  },
+  "description": "Quercus Parsing Grade Calculator",
+  "main": "disable-browser-cache.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CursedKeyboard/QGrade.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CursedKeyboard/QGrade/issues"
+  },
+  "homepage": "https://github.com/CursedKeyboard/QGrade#readme"
 }
